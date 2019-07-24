@@ -1,0 +1,122 @@
+
+
+
+
+
+In simple words your "root" session do not know password to mysql root user.
+
+If you want to make easier to access your mysql
+
+create .my.cnf in /root/
+
+and put in it
+
+[mysqladmin]
+ user = root
+ password = root
+[mysql]
+ user = root
+ password = root
+[mysqldump]
+ user = root
+ password = root
+ 
+Prerequisites:
+
+1) Install MariaDB
+sudo apt-get -y install mariadb-server mariadb-client
+sudo mysql_secure_installation
+
+1.1) uninstall mariaDB:
+
+sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-5.5 mysql-client-core-5.5
+sudo rm -rf /etc/mysql /var/lib/mysql
+sudo apt-get autoremove
+sudo apt-get autoclean
+
+2) Install phpmyadmin
+sudo apt-get -y install phpmyadmin (and answer some interactive questions)
+    Configuring phpmyadmin:
+        Web server to reconfigure automatically: apache2
+        Configure database for phpmyadmin with dbconfig-common: Yes
+        MySQL application password for phpmyadmin: <blank>
+
+2.2) reconfiguring phpmyadmin, and by answering some interactive questions.
+
+sudo dpkg-reconfigure phpmyadmin
+
+3) In apache2, create a symbolic link to phpmyadmin
+sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin.conf
+sudo service apache2 restart
+
+
+sudo mysql --user=root mysql
+root@YAP-03:~ $ sudo mysql -u root
+# unix_socket
+MariaDB [mysql]> use mysql;
+MariaDB [mysql]> SELECT User, Host, plugin FROM mysql.user;
+
+mysql> update user set plugin='' where User='root';
+mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+mysql> FLUSH PRIVILEGES;
+mysql> exit;
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root";
+
+
+use mysql;
+# Creation User
+
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';
+
+CREATE USER 'root'@'%' IDENTIFIED BY 'root';
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';
+
+mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'root';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';
+mysql> quit
+
+update user set Host='localhost' where user='root';
+update db set Host='localhost' where Db='mysql';
+
+
+update user set authentication_string=password('root') where user='root';
+
+
+update user set authentication_string=password('root') where user='root';
+
+
+# GRANT  PRIVILEGES 
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root';
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root';
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+
+grant all privileges on mysql.* to 'root'@'localhost' identified by 'root';
+
+
+GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root';
+
+GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'pipi' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+
+show databases;
+use mysql;
+UPDATE mysql.user 
+    SET authentication_string = PASSWORD('root'), password_expired = 'N'
+    WHERE User = 'root' AND Host = 'localhost';
+exit;
+
+>>>cur = conn.cursor()  //creates new cursor object for executing SQL statements
+>>>conn.commit()  //Commits the transactions
+>>>conn.rollback()  //Roll back the transactions
+>>>conn.close()  //closes the connection
+>>>conn.callproc(proc,param)  //call stored procedure for execution
+>>>conn.getsource(proc)  //fetches stored procedure code
+
+# important
+https://discuss.erpnext.com/t/cant-connect-to-mysql-server-on-u-local-host-error-111-connection-refused/41047
